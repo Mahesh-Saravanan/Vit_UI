@@ -87,6 +87,10 @@ def _letterbox_and_normalise(
     # Step 3: sort by reading order (top → bottom, left → right)
     sequence.sort(key=lambda t: (t[1], t[0]))           # sort by (y1_norm, x1_norm)
 
+    # Cap length to MAX_SEQ_LEN-1 so BOS + sequence always fits the causal mask
+    max_elems = config.MAX_SEQ_LEN - 1
+    sequence  = sequence[:max_elems]
+
     # Step 4: resize padded image to IMAGE_SIZE × IMAGE_SIZE
     resized = padded.resize((config.IMAGE_SIZE, config.IMAGE_SIZE), Image.BILINEAR)
     image_tensor = _NORMALIZE(resized)                  # [3, IMAGE_SIZE, IMAGE_SIZE]

@@ -16,7 +16,9 @@ import os
 import math
 import torch
 from torch.optim import AdamW
-from torch.cuda.amp import GradScaler, autocast
+# AMP: access via torch namespace (no submodule import → no Pylance unresolved-import warning)
+# torch.cuda.amp.GradScaler  — used as an attribute at runtime
+# torch.autocast             — top-level, stable since PyTorch 1.12, not deprecated
 from tqdm import tqdm
 
 import config
@@ -57,7 +59,7 @@ def train_one_epoch(model, loader, optimizer, scaler, scheduler, device, epoch):
 
         optimizer.zero_grad(set_to_none=True)
 
-        with autocast(enabled=(device.type == "cuda")):
+        with torch.autocast(device_type=device.type, enabled=(device.type == "cuda")):
             pred_coords, pred_logits, pred_stop = model(images, coords, classes)
             # pred_coords : [B, T+1, 4]
             # pred_logits : [B, T+1, num_classes]
@@ -107,7 +109,7 @@ def eval_one_epoch(model, loader, device):
         padding_mask = batch["padding_mask"].to(device, non_blocking=True)
         lengths      = batch["lengths"].to(device, non_blocking=True)
 
-        with autocast(enabled=(device.type == "cuda")):
+        with torch.autocast(device_type=device.type, enabled=(device.type == "cuda")):
             pred_coords, pred_logits, pred_stop = model(images, coords, classes)
             loss_total, loss_coord, loss_class, loss_stop = compute_loss(
                 pred_coords, pred_logits, pred_stop,
@@ -168,7 +170,7 @@ def train():
 
     optimizer = make_optimizer()
     scheduler = build_scheduler(optimizer, warmup_steps, total_steps)
-    scaler    = GradScaler(enabled=(device.type == "cuda"))
+    scaler    = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
 
     # ── Training loop ─────────────────────────────────────────────────────────
     best_val_loss = float("inf")

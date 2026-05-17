@@ -26,7 +26,7 @@ NUM_LAYERS  = 6      # number of DecoderBlocks (keep lower than ViT depth for sp
 NUM_HEADS   = 12
 MLP_RATIO   = 4.0
 DROPOUT     = 0.1
-MAX_SEQ_LEN = 128    # BOS + up to 127 predicted elements (covers real-world UIs)
+MAX_SEQ_LEN = 512    # BOS + up to 511 elements; RICO 60k has screens with 264+ components
 
 # ── Loss weights ──────────────────────────────────────────────────────────────
 LAMBDA_COORD = 1.0
