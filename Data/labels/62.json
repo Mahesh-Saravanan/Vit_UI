@@ -1,0 +1,78 @@
+{
+    "old_id": "61",
+    "new_id": "62.jpg",
+    "children": [
+        {
+            "label": "Background Image",
+            "bounds": [
+                0,
+                84,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                0,
+                697,
+                1440,
+                886
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                0,
+                261,
+                350,
+                380
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                1299,
+                259,
+                1440,
+                382
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                91,
+                337,
+                161,
+                407
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                179,
+                284,
+                1282,
+                453
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                91,
+                455,
+                1282,
+                624
+            ]
+        }
+    ]
+}

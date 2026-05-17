@@ -1,0 +1,51 @@
+{
+    "old_id": "21",
+    "new_id": "22.jpg",
+    "children": [
+        {
+            "label": "Drawer",
+            "bounds": [
+                0,
+                1804,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                56,
+                1422,
+                140,
+                1506
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                252,
+                1352,
+                1440,
+                1576
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                781,
+                1604,
+                1125,
+                1772
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                1125,
+                1604,
+                1398,
+                1772
+            ]
+        }
+    ]
+}

@@ -1,0 +1,105 @@
+{
+    "old_id": "63",
+    "new_id": "64.jpg",
+    "children": [
+        {
+            "label": "Advertisement",
+            "bounds": [
+                0,
+                2217,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                0,
+                88,
+                116,
+                164
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                662,
+                88,
+                778,
+                164
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                1324,
+                88,
+                1440,
+                164
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                184,
+                2061,
+                321,
+                2198
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                820,
+                2064,
+                950,
+                2194
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                496,
+                2064,
+                626,
+                2194
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                1125,
+                2064,
+                1255,
+                2194
+            ]
+        },
+        {
+            "label": "Background Image",
+            "bounds": [
+                0,
+                168,
+                1440,
+                2042
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                1317,
+                203,
+                1405,
+                291
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                1194,
+                203,
+                1282,
+                291
+            ]
+        }
+    ]
+}

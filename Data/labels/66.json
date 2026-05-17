@@ -1,0 +1,60 @@
+{
+    "old_id": "65",
+    "new_id": "66.jpg",
+    "children": [
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                252
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                35,
+                295,
+                1141,
+                366
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                1334,
+                287,
+                1422,
+                375
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                1176,
+                287,
+                1264,
+                375
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                0,
+                410,
+                1440,
+                2217
+            ]
+        },
+        {
+            "label": "Advertisement",
+            "bounds": [
+                0,
+                2217,
+                1440,
+                2392
+            ]
+        }
+    ]
+}

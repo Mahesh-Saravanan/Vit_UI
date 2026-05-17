@@ -1,0 +1,51 @@
+{
+    "old_id": "3",
+    "new_id": "4.jpg",
+    "children": [
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                28,
+                1775,
+                1412,
+                1958
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                1096,
+                1986,
+                1440,
+                2336
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                0,
+                1986,
+                344,
+                2336
+            ]
+        },
+        {
+            "label": "Video",
+            "bounds": [
+                0,
+                349,
+                1440,
+                1789
+            ]
+        }
+    ]
+}

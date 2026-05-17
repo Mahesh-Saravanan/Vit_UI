@@ -1,0 +1,15 @@
+{
+    "old_id": "0",
+    "new_id": "1.jpg",
+    "children": [
+        {
+            "label": "Web View",
+            "bounds": [
+                0,
+                0,
+                1440,
+                2392
+            ]
+        }
+    ]
+}

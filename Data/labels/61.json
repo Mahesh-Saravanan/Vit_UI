@@ -1,0 +1,96 @@
+{
+    "old_id": "60",
+    "new_id": "61.jpg",
+    "children": [
+        {
+            "label": "Background Image",
+            "bounds": [
+                0,
+                84,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Background Image",
+            "bounds": [
+                0,
+                84,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                0,
+                1947,
+                1440,
+                2196
+            ]
+        },
+        {
+            "label": "Map View",
+            "bounds": [
+                0,
+                84,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                0,
+                2196,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                435,
+                119,
+                1005,
+                202
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                554,
+                202,
+                885,
+                277
+            ]
+        },
+        {
+            "label": "Input",
+            "bounds": [
+                53,
+                487,
+                1387,
+                628
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                0,
+                261,
+                350,
+                380
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                1299,
+                259,
+                1440,
+                382
+            ]
+        }
+    ]
+}

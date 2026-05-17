@@ -1,0 +1,51 @@
+{
+    "old_id": "79",
+    "new_id": "80.jpg",
+    "children": [
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                0,
+                298,
+                1440,
+                804
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                0,
+                808,
+                1440,
+                1314
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                0,
+                1318,
+                1440,
+                1793
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                0,
+                1797,
+                1440,
+                2392
+            ]
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "old_id": "59",
+    "new_id": "60.jpg",
+    "children": [
+        {
+            "label": "Background Image",
+            "bounds": [
+                0,
+                84,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Background Image",
+            "bounds": [
+                0,
+                84,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                0,
+                2196,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                0,
+                261,
+                350,
+                380
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                1299,
+                259,
+                1440,
+                382
+            ]
+        }
+    ]
+}

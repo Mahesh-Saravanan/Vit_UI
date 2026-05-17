@@ -1,0 +1,24 @@
+{
+    "old_id": "1",
+    "new_id": "2.jpg",
+    "children": [
+        {
+            "label": "Web View",
+            "bounds": [
+                0,
+                0,
+                1440,
+                2214
+            ]
+        },
+        {
+            "label": "Advertisement",
+            "bounds": [
+                1,
+                2217,
+                1439,
+                2392
+            ]
+        }
+    ]
+}

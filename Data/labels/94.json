@@ -1,0 +1,114 @@
+{
+    "old_id": "96",
+    "new_id": "94.jpg",
+    "children": [
+        {
+            "label": "Drawer",
+            "bounds": [
+                0,
+                84,
+                840,
+                2392
+            ]
+        },
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                0,
+                280,
+                1440,
+                378
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                53,
+                991,
+                633,
+                1067
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                0,
+                1155,
+                1440,
+                1253
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                53,
+                1306,
+                1387,
+                1437
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                1100,
+                1490,
+                1387,
+                1547
+            ]
+        },
+        {
+            "label": "Input",
+            "bounds": [
+                53,
+                442,
+                1387,
+                547
+            ]
+        },
+        {
+            "label": "Input",
+            "bounds": [
+                53,
+                565,
+                1387,
+                670
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                53,
+                688,
+                1387,
+                828
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                53,
+                881,
+                394,
+                938
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                1041,
+                881,
+                1387,
+                938
+            ]
+        }
+    ]
+}

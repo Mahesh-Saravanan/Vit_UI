@@ -1,0 +1,168 @@
+{
+    "old_id": "77",
+    "new_id": "78.jpg",
+    "children": [
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                350,
+                378,
+                518
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                368,
+                1440,
+                518
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                588,
+                378,
+                756
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                641,
+                971,
+                703
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                175,
+                791,
+                1128,
+                903
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                175,
+                921,
+                715,
+                1033
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                175,
+                1051,
+                794,
+                1163
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                1233,
+                378,
+                1401
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                1268,
+                1440,
+                1384
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                1471,
+                378,
+                1639
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                1541,
+                1335,
+                1603
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                1709,
+                378,
+                1877
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                1744,
+                1440,
+                1860
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                1947,
+                378,
+                2115
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                1982,
+                1440,
+                2098
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                70,
+                2185,
+                378,
+                2353
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                448,
+                2238,
+                1036,
+                2300
+            ]
+        }
+    ]
+}

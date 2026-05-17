@@ -1,0 +1,51 @@
+{
+    "old_id": "37",
+    "new_id": "38.jpg",
+    "children": [
+        {
+            "label": "Image",
+            "bounds": [
+                92,
+                535,
+                720,
+                1163
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                720,
+                535,
+                1348,
+                1163
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                92,
+                1229,
+                720,
+                1857
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                720,
+                1229,
+                1348,
+                1857
+            ]
+        },
+        {
+            "label": "Advertisement",
+            "bounds": [
+                0,
+                2217,
+                1440,
+                2392
+            ]
+        }
+    ]
+}

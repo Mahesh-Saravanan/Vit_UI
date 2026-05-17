@@ -1,0 +1,51 @@
+{
+    "old_id": "48",
+    "new_id": "49.jpg",
+    "children": [
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "Web View",
+            "bounds": [
+                0,
+                280,
+                1440,
+                2049
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                0,
+                2049,
+                1440,
+                2217
+            ]
+        },
+        {
+            "label": "Advertisement",
+            "bounds": [
+                0,
+                2217,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Advertisement",
+            "bounds": [
+                0,
+                2217,
+                1440,
+                2392
+            ]
+        }
+    ]
+}

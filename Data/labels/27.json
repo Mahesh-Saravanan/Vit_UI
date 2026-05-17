@@ -1,0 +1,69 @@
+{
+    "old_id": "26",
+    "new_id": "27.jpg",
+    "children": [
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                252
+            ]
+        },
+        {
+            "label": "Icon",
+            "bounds": [
+                0,
+                306,
+                216,
+                411
+            ]
+        },
+        {
+            "label": "Input",
+            "bounds": [
+                216,
+                303,
+                1368,
+                414
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                0,
+                2178,
+                720,
+                2392
+            ]
+        },
+        {
+            "label": "Text Button",
+            "bounds": [
+                720,
+                2178,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Text",
+            "bounds": [
+                626,
+                1385,
+                814,
+                1427
+            ]
+        },
+        {
+            "label": "Image",
+            "bounds": [
+                18,
+                2083,
+                228,
+                2160
+            ]
+        }
+    ]
+}

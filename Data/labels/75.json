@@ -1,0 +1,96 @@
+{
+    "old_id": "74",
+    "new_id": "75.jpg",
+    "children": [
+        {
+            "label": "Text",
+            "bounds": [
+                0,
+                2339,
+                1440,
+                2392
+            ]
+        },
+        {
+            "label": "Toolbar",
+            "bounds": [
+                0,
+                84,
+                1440,
+                280
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                4,
+                298,
+                724,
+                821
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                716,
+                298,
+                1436,
+                821
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                4,
+                824,
+                724,
+                1538
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                716,
+                824,
+                1436,
+                1538
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                4,
+                1541,
+                724,
+                2255
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                716,
+                1541,
+                1436,
+                2255
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                4,
+                2258,
+                724,
+                2392
+            ]
+        },
+        {
+            "label": "List Item",
+            "bounds": [
+                716,
+                2258,
+                1436,
+                2392
+            ]
+        }
+    ]
+}
