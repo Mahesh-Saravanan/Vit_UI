@@ -90,8 +90,8 @@ def compute_loss(
         stop_mask[i, : L + 1] = True
 
     if stop_mask.any():
-        stop_loss = F.binary_cross_entropy(
-            pred_stop[stop_mask],                           # [N_stop]
+        stop_loss = F.binary_cross_entropy_with_logits(
+            pred_stop[stop_mask],                           # [N_stop]  raw logits
             stop_target[stop_mask],                         # [N_stop]
             reduction="mean",
         )

@@ -443,9 +443,9 @@ class UIDetectionDecoder(nn.Module):
         hidden = self.ln_f(hidden)                         # [B, T+1, d_model]
 
         # Output heads
-        pred_coords = torch.sigmoid(self.coord_head(hidden))        # [B, T+1, 4]
-        pred_logits = self.class_head(hidden)                        # [B, T+1, num_classes]
-        pred_stop   = torch.sigmoid(self.eos_head(hidden)).squeeze(-1)  # [B, T+1]
+        pred_coords = torch.sigmoid(self.coord_head(hidden))   # [B, T+1, 4]
+        pred_logits = self.class_head(hidden)                  # [B, T+1, num_classes]
+        pred_stop   = self.eos_head(hidden).squeeze(-1)        # [B, T+1]  raw logits — use BCEWithLogits in loss
 
         return pred_coords, pred_logits, pred_stop
 
