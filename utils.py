@@ -68,7 +68,14 @@ def load_checkpoint(
     model.load_state_dict(ckpt["model_state_dict"])
 
     if optimizer is not None and "optimizer_state_dict" in ckpt:
-        optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+        try:
+            optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+        except ValueError as e:
+            # Happens when resuming with a different freeze/unfreeze state — the saved
+            # optimizer had different param groups than the current one.  Model weights
+            # are already loaded; just start the optimizer fresh.
+            print(f"  Warning: optimizer state not restored ({e}).")
+            print("  Starting optimizer from scratch — model weights are loaded correctly.")
 
     epoch    = ckpt.get("epoch", 0)
     val_loss = ckpt.get("val_loss", float("inf"))
