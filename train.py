@@ -14,6 +14,7 @@ Usage:
 
 import os
 import math
+import argparse
 import torch
 from torch.optim import AdamW
 # AMP: access via torch namespace (no submodule import → no Pylance unresolved-import warning)
@@ -127,7 +128,35 @@ def eval_one_epoch(model, loader, device):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-def train():
+def parse_args():
+    p = argparse.ArgumentParser(description="Train VisionUIDetector")
+    p.add_argument(
+        "--resume", type=str, default=None, metavar="CKPT",
+        help="Path to a checkpoint to resume from (e.g. checkpoints/best.pt)",
+    )
+    p.add_argument(
+        "--unfreeze_now", action="store_true",
+        help="Immediately unfreeze the ViT encoder — use with --resume to skip the frozen phase",
+    )
+    return p.parse_args()
+
+
+def _do_unfreeze(model, optimizer, scheduler):
+    """Unfreeze encoder, sync optimizer + scheduler, clear CUDA cache."""
+    torch.cuda.empty_cache()
+    new_params = model.unfreeze_encoder(config.UNFREEZE_BLOCKS)
+    optimizer.add_param_group({
+        "params": new_params,
+        "lr": config.LR,
+        "weight_decay": config.WEIGHT_DECAY,
+    })
+    # LambdaLR tracks one base_lr + one lambda per param group.
+    # Adding a group without syncing these lists causes a strict-zip crash.
+    scheduler.base_lrs.append(config.LR)
+    scheduler.lr_lambdas.append(scheduler.lr_lambdas[0])
+
+
+def train(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device : {device}")
     if device.type == "cuda":
@@ -146,54 +175,61 @@ def train():
     print("\nInitialising VisionUIDetector …")
     model = VisionUIDetector().to(device)
 
+    # ── Decide freeze state before building optimizer ─────────────────────────
+    # unfreeze_now=True  (--resume + --unfreeze_now): skip frozen phase entirely
+    # unfreeze_now=False (fresh start):               freeze encoder for FREEZE_EPOCHS
+    start_epoch      = 0
+    encoder_unfrozen = args.unfreeze_now or (config.FREEZE_EPOCHS == 0)
+
+    if not encoder_unfrozen:
+        for p in model.encoder.parameters():
+            p.requires_grad = False
+        frozen_n = sum(p.numel() for p in model.encoder.parameters())
+        print(f"Frozen ViT encoder ({frozen_n:,} params) for {config.FREEZE_EPOCHS} epochs")
+
+    # ── Optimiser + scheduler ─────────────────────────────────────────────────
+    optimizer    = AdamW(
+        filter(lambda p: p.requires_grad, model.parameters()),
+        lr=config.LR, weight_decay=config.WEIGHT_DECAY,
+    )
+    total_steps  = len(train_loader) * config.EPOCHS
+    warmup_steps = max(1, int(total_steps * config.WARMUP_RATIO))
+    scheduler    = build_scheduler(optimizer, warmup_steps, total_steps)
+    scaler       = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
+
+    # ── Resume from checkpoint ────────────────────────────────────────────────
+    if args.resume:
+        start_epoch, best_val_loss = load_checkpoint(model, args.resume, device, optimizer)
+        print(f"Resumed from '{args.resume}'  (epoch {start_epoch}, val_loss {best_val_loss:.4f})")
+        # Fast-forward scheduler to match steps already taken
+        steps_done = start_epoch * len(train_loader)
+        for _ in range(steps_done):
+            scheduler.step()
+    else:
+        best_val_loss = float("inf")
+
+    # If --unfreeze_now, perform unfreeze immediately after loading weights
+    if args.unfreeze_now and not encoder_unfrozen:
+        print("  → Immediately unfreezing ViT encoder (--unfreeze_now)")
+        _do_unfreeze(model, optimizer, scheduler)
+        encoder_unfrozen = True
+    elif encoder_unfrozen and config.FREEZE_EPOCHS == 0:
+        # Started with no freeze — still wire up grad checkpointing
+        model.unfreeze_encoder(config.UNFREEZE_BLOCKS)
+
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     total     = sum(p.numel() for p in model.parameters())
     print(f"Parameters : {trainable:,} trainable / {total:,} total")
 
-    # ── Freeze ViT encoder ────────────────────────────────────────────────────
-    if config.FREEZE_EPOCHS > 0:
-        for p in model.encoder.parameters():
-            p.requires_grad = False
-        frozen_params = sum(p.numel() for p in model.encoder.parameters())
-        print(f"Frozen ViT encoder ({frozen_params:,} params) for {config.FREEZE_EPOCHS} epochs")
-
-    # ── Optimiser + scheduler ─────────────────────────────────────────────────
-    def make_optimizer():
-        return AdamW(
-            filter(lambda p: p.requires_grad, model.parameters()),
-            lr=config.LR,
-            weight_decay=config.WEIGHT_DECAY,
-        )
-
-    total_steps  = len(train_loader) * config.EPOCHS
-    warmup_steps = max(1, int(total_steps * config.WARMUP_RATIO))
-
-    optimizer = make_optimizer()
-    scheduler = build_scheduler(optimizer, warmup_steps, total_steps)
-    scaler    = torch.cuda.amp.GradScaler(enabled=(device.type == "cuda"))
-
     # ── Training loop ─────────────────────────────────────────────────────────
-    best_val_loss = float("inf")
-    encoder_unfrozen = (config.FREEZE_EPOCHS == 0)
+    print(f"\nStarting training from epoch {start_epoch + 1} …\n")
 
-    print(f"\nStarting training for {config.EPOCHS} epochs …\n")
+    for epoch in range(start_epoch + 1, config.EPOCHS + 1):
 
-    for epoch in range(1, config.EPOCHS + 1):
-
-        # Unfreeze encoder after FREEZE_EPOCHS and rebuild optimiser
+        # Scheduled unfreeze (normal fresh-start path)
         if not encoder_unfrozen and epoch > config.FREEZE_EPOCHS:
             print(f"  → Unfreezing ViT encoder at epoch {epoch}")
-            for p in model.encoder.parameters():
-                p.requires_grad = True
-            optimizer.add_param_group({
-                "params": list(model.encoder.parameters()),
-                "lr": config.LR,
-                "weight_decay": config.WEIGHT_DECAY,
-            })
-            # LambdaLR uses strict zip(param_groups, base_lrs, lr_lambdas).
-            # Adding a param group without syncing these lists causes a crash.
-            scheduler.base_lrs.append(config.LR)
-            scheduler.lr_lambdas.append(scheduler.lr_lambdas[0])
+            _do_unfreeze(model, optimizer, scheduler)
             encoder_unfrozen = True
 
         print(f"Epoch {epoch}/{config.EPOCHS}  (lr={scheduler.get_last_lr()[0]:.2e})")
@@ -210,13 +246,10 @@ def train():
             f"  class={v['class']:.4f}  stop={v['stop']:.4f}"
         )
 
-        # Always overwrite latest
         save_checkpoint(
             model, optimizer, epoch, v["total"],
             os.path.join(config.CHECKPOINT_DIR, "latest.pt"),
         )
-
-        # Save best by validation total loss
         if v["total"] < best_val_loss:
             best_val_loss = v["total"]
             save_checkpoint(
@@ -232,4 +265,4 @@ def train():
 
 
 if __name__ == "__main__":
-    train()
+    train(parse_args())

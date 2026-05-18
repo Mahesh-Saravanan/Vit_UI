@@ -38,12 +38,14 @@ LR           = 1e-4
 WEIGHT_DECAY = 1e-2
 
 # ── Training schedule ─────────────────────────────────────────────────────────
-EPOCHS        = 50
-FREEZE_EPOCHS = 5    # keep ViT encoder frozen for the first N epochs
-BATCH_SIZE    = 8
-WARMUP_RATIO  = 0.05 # fraction of total steps used for linear LR warmup
-GRAD_CLIP     = 1.0
-NUM_WORKERS   = 4
+EPOCHS         = 50
+FREEZE_EPOCHS  = 5    # keep ViT encoder frozen for the first N epochs
+UNFREEZE_BLOCKS = 4   # unfreeze only the last N ViT blocks (-1 = unfreeze all 12)
+GRAD_CHECKPOINT = True  # gradient checkpointing on ViT when unfrozen (~40% less activation memory)
+BATCH_SIZE     = 8
+WARMUP_RATIO   = 0.05 # fraction of total steps used for linear LR warmup
+GRAD_CLIP      = 1.0
+NUM_WORKERS    = 4
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 CHECKPOINT_DIR = "checkpoints"

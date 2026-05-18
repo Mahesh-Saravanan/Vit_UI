@@ -37,6 +37,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+# torch.utils.checkpoint.checkpoint accessed via attribute — no import needed
 
 import config
 
@@ -132,16 +133,19 @@ class ViTEncoder(nn.Module):
 
     def __init__(
         self,
-        image_size:  int   = 512,
-        patch_size:  int   = 16,
-        in_channels: int   = 3,
-        embed_dim:   int   = 768,
-        depth:       int   = 12,
-        num_heads:   int   = 12,
-        mlp_ratio:   float = 4.0,
-        dropout:     float = 0.0,
+        image_size:          int   = 512,
+        patch_size:          int   = 16,
+        in_channels:         int   = 3,
+        embed_dim:           int   = 768,
+        depth:               int   = 12,
+        num_heads:           int   = 12,
+        mlp_ratio:           float = 4.0,
+        dropout:             float = 0.0,
+        use_grad_checkpoint: bool  = False,
     ):
         super().__init__()
+        self.use_grad_checkpoint = use_grad_checkpoint
+
         self.patch_embed = PatchEmbedding(image_size, patch_size, in_channels, embed_dim)
         num_patches      = self.patch_embed.num_patches           # 1024
 
@@ -177,7 +181,11 @@ class ViTEncoder(nn.Module):
         x   = self.pos_drop(x + self.pos_embed)
 
         for block in self.blocks:
-            x = block(x)
+            if self.use_grad_checkpoint and x.requires_grad:
+                # Recompute activations on backward instead of storing them (~40% less memory)
+                x = torch.utils.checkpoint.checkpoint(block, x, use_reentrant=False)
+            else:
+                x = block(x)
 
         return self.norm(x)                                # [B, 1025, D]
 
@@ -535,6 +543,45 @@ class VisionUIDetector(nn.Module):
             num_classes=num_classes, max_seq_len=max_seq_len,
             mlp_ratio=mlp_ratio, dropout=dropout,
         )
+
+    def unfreeze_encoder(self, n_blocks: int = -1) -> list:
+        """
+        Unfreeze ViT encoder for fine-tuning and enable gradient checkpointing.
+
+        n_blocks = -1  : unfreeze all 12 blocks (highest accuracy, most memory)
+        n_blocks =  N  : unfreeze only the last N blocks + final norm + pos tokens
+                         (early blocks learn generic edges that need no domain adaptation)
+
+        Returns the list of newly trainable parameters (pass to optimizer.add_param_group).
+        """
+        # Always enable gradient checkpointing when the encoder trains
+        if config.GRAD_CHECKPOINT:
+            self.encoder.use_grad_checkpoint = True
+
+        params = []
+        if n_blocks == -1:
+            for p in self.encoder.parameters():
+                p.requires_grad = True
+                params.append(p)
+        else:
+            # Final norm + positional tokens — lightweight, always worth fine-tuning
+            for p in self.encoder.norm.parameters():
+                p.requires_grad = True
+                params.append(p)
+            for token in (self.encoder.cls_token, self.encoder.pos_embed):
+                token.requires_grad = True
+                params.append(token)
+            # Last n_blocks transformer blocks only
+            for block in self.encoder.blocks[-n_blocks:]:
+                for p in block.parameters():
+                    p.requires_grad = True
+                    params.append(p)
+
+        n_params = sum(p.numel() for p in params)
+        print(f"  Unfrozen {n_params:,} encoder params "
+              f"({'all blocks' if n_blocks == -1 else f'last {n_blocks} blocks'})"
+              f"  grad_checkpoint={self.encoder.use_grad_checkpoint}")
+        return params
 
     def _load_pretrained_vit(self, image_size: int) -> None:
         """
