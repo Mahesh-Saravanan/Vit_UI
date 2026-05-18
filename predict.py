@@ -155,6 +155,116 @@ def predict(
     return results
 
 
+# ── Visualisation ────────────────────────────────────────────────────────────
+
+# One distinct colour per UI class (RGB, 0-255)
+_PALETTE = [
+    (230, 25,  75),  (60,  180, 75),  (255, 225, 25),  (0,   130, 200),
+    (245, 130, 48),  (145, 30,  180), (70,  240, 240),  (240, 50,  230),
+    (210, 245, 60),  (250, 190, 212), (0,   128, 128),  (220, 190, 255),
+    (170, 110, 40),  (255, 250, 200), (128, 0,   0),    (170, 255, 195),
+    (128, 128, 0),   (255, 215, 180), (0,   0,   128),  (128, 128, 128),
+    (255, 255, 255), (0,   0,   0),   (255, 0,   0),    (0,   255, 0),
+    (0,   0,   255),
+]
+
+def _class_colour(cls_name: str) -> tuple:
+    idx = list(config.UI_CLASSES).index(cls_name) if cls_name in config.UI_CLASSES else 0
+    return _PALETTE[idx % len(_PALETTE)]
+
+
+def visualise(
+    image_path: str,
+    detections: list,
+    save_path:  str  = None,
+    show:       bool = True,
+    box_alpha:  float = 0.35,
+    font_scale: float = 0.55,
+) -> None:
+    """
+    Draw semi-transparent bounding boxes + class labels on the original image.
+
+    Args:
+        image_path  : path to the original (unprocessed) screenshot.
+        detections  : list of {'class': str, 'bounds': [x1,y1,x2,y2]} dicts
+                      in original pixel coordinates.
+        save_path   : if given, save the annotated image here (PNG/JPG).
+        show        : if True, open a window with plt.show().
+        box_alpha   : opacity of the filled rectangle (0 = invisible, 1 = solid).
+        font_scale  : matplotlib font size for labels.
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+
+    img = Image.open(image_path).convert("RGB")
+    w, h = img.size
+
+    fig, ax = plt.subplots(1, 1, figsize=(w / 100, h / 100), dpi=100)
+    ax.imshow(img)
+    ax.axis("off")
+
+    legend_handles = {}
+
+    for det in detections:
+        cls_name        = det["class"]
+        x1, y1, x2, y2 = det["bounds"]
+        bw, bh          = x2 - x1, y2 - y1
+        r, g, b         = _class_colour(cls_name)
+        colour_norm     = (r / 255, g / 255, b / 255)
+
+        # Semi-transparent filled rectangle
+        rect = mpatches.FancyBboxPatch(
+            (x1, y1), bw, bh,
+            boxstyle="square,pad=0",
+            linewidth=1.5,
+            edgecolor=colour_norm,
+            facecolor=(*colour_norm, box_alpha),
+        )
+        ax.add_patch(rect)
+
+        # Label: white text on a coloured background pill
+        ax.text(
+            x1 + 4, y1 + 4,
+            cls_name,
+            fontsize=max(6, font_scale * 72 * min(w, h) / 1000),
+            color="white",
+            verticalalignment="top",
+            bbox=dict(
+                boxstyle="round,pad=0.15",
+                facecolor=colour_norm,
+                alpha=0.85,
+                edgecolor="none",
+            ),
+        )
+
+        # Collect for legend (one entry per unique class)
+        if cls_name not in legend_handles:
+            legend_handles[cls_name] = mpatches.Patch(
+                facecolor=colour_norm, edgecolor=colour_norm, label=cls_name
+            )
+
+    if legend_handles:
+        ax.legend(
+            handles=list(legend_handles.values()),
+            loc="upper right",
+            fontsize=7,
+            framealpha=0.7,
+            ncol=max(1, len(legend_handles) // 12),
+        )
+
+    plt.title(f"{len(detections)} UI component(s) detected", fontsize=10, pad=6)
+    plt.tight_layout(pad=0)
+
+    if save_path:
+        plt.savefig(save_path, dpi=150, bbox_inches="tight")
+        print(f"Annotated image saved → {save_path}")
+
+    if show:
+        plt.show()
+
+    plt.close(fig)
+
+
 # ── CLI entry point ───────────────────────────────────────────────────────────
 
 def parse_args():
@@ -175,6 +285,14 @@ def parse_args():
     parser.add_argument(
         "--device", type=str, default=None,
         help="Device: 'cuda' or 'cpu' (default: auto-detect)",
+    )
+    parser.add_argument(
+        "--save", type=str, default=None, metavar="PATH",
+        help="Also save the annotated image to this path (e.g. out.png)",
+    )
+    parser.add_argument(
+        "--no-show", action="store_true",
+        help="Do not open the interactive plot window (useful on headless servers)",
     )
     return parser.parse_args()
 
@@ -202,3 +320,10 @@ if __name__ == "__main__":
     print(f"\nDetected {len(detections)} UI component(s):")
     for i, det in enumerate(detections, 1):
         print(f"  {i:3d}.  {det['class']:<22}  bounds={det['bounds']}")
+
+    visualise(
+        image_path=args.image,
+        detections=detections,
+        save_path=args.save,
+        show=not args.no_show,
+    )

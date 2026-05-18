@@ -521,6 +521,7 @@ class VisionUIDetector(nn.Module):
             embed_dim=vit_dim, depth=vit_depth, num_heads=vit_heads,
             mlp_ratio=mlp_ratio, dropout=dropout,
         )
+        self._load_pretrained_vit(image_size)
 
         # Project ViT output to decoder dim (identity-like when dims match)
         self.adapter = (
@@ -534,6 +535,43 @@ class VisionUIDetector(nn.Module):
             num_classes=num_classes, max_seq_len=max_seq_len,
             mlp_ratio=mlp_ratio, dropout=dropout,
         )
+
+    def _load_pretrained_vit(self, image_size: int) -> None:
+        """
+        Copy pretrained ViT-B/16 weights from timm into self.encoder.
+
+        timm is told the target image_size so it automatically bicubic-interpolates
+        the positional embeddings from 197 (224px) → 1025 (512px) positions during
+        model construction — no manual interpolation needed.
+
+        Weight matching is done by key + shape so any timm-only keys (head,
+        pre_logits, …) are silently skipped.
+        """
+        try:
+            import timm  # type: ignore[import]
+            print("Loading pretrained ViT-B/16 weights from timm …")
+            vit_timm = timm.create_model(
+                "vit_base_patch16_224",
+                pretrained=True,
+                img_size=image_size,    # timm interpolates pos_embed to match
+            )
+            timm_sd   = vit_timm.state_dict()
+            encoder_sd = self.encoder.state_dict()
+
+            matched = {
+                k: v for k, v in timm_sd.items()
+                if k in encoder_sd and encoder_sd[k].shape == v.shape
+            }
+            result = self.encoder.load_state_dict(matched, strict=False)
+            print(f"  Loaded {len(matched)} tensors from timm pretrained ViT-B/16")
+            if result.missing_keys:
+                print(f"  Not in timm checkpoint (will stay random): {result.missing_keys}")
+            del vit_timm
+
+        except ImportError:
+            print("timm not installed — encoder uses random weights.  pip install timm")
+        except Exception as exc:
+            print(f"Pretrained ViT load failed ({exc}) — encoder uses random weights.")
 
     def encode_image(self, pixel_values: torch.Tensor) -> torch.Tensor:
         """pixel_values [B, 3, H, W] → encoder output [B, 1025, d_model]"""

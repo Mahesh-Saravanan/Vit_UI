@@ -185,12 +185,15 @@ def train():
             print(f"  → Unfreezing ViT encoder at epoch {epoch}")
             for p in model.encoder.parameters():
                 p.requires_grad = True
-            # Add encoder params as a new group; keeps existing momentum buffers intact
             optimizer.add_param_group({
                 "params": list(model.encoder.parameters()),
                 "lr": config.LR,
                 "weight_decay": config.WEIGHT_DECAY,
             })
+            # LambdaLR uses strict zip(param_groups, base_lrs, lr_lambdas).
+            # Adding a param group without syncing these lists causes a crash.
+            scheduler.base_lrs.append(config.LR)
+            scheduler.lr_lambdas.append(scheduler.lr_lambdas[0])
             encoder_unfrozen = True
 
         print(f"Epoch {epoch}/{config.EPOCHS}  (lr={scheduler.get_last_lr()[0]:.2e})")
